@@ -6,6 +6,7 @@ authors = [
     {name = "Gabriel",email = "gabrielmvoga@gmail.com"}
 ]
 readme = "README.md"
+# requires-python = "3.13.1"
 dependencies = [
     "fastapi (>=0.116.1,<0.117.0)",
     "uvicorn (>=0.35.0,<0.36.0)",
@@ -20,6 +21,16 @@ dependencies = [
 pytest = "^8.4.1"
 pytest-asyncio = "^1.1.0"
 pre-commit = "^4.3.0"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+  "--ignore=docs_src",
+]
+xfail_strict = true
+junit_family = "xunit2"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
