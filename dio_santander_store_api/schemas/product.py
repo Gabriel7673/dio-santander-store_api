@@ -1,10 +1,10 @@
-from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import UUID4, BaseModel, Field
+from bson import Decimal128
+from pydantic import AfterValidator, BaseModel, Field
 
-from dio_santander_store_api.schemas.base import BaseSchemaMixin
+from dio_santander_store_api.schemas.base import BaseSchemaMixin, OutMixin
 
 
 class ProductBase(BaseModel):
@@ -18,10 +18,15 @@ class ProductIn(ProductBase, BaseSchemaMixin):
     ...
 
 
-class ProductOut(ProductIn):
-    id: UUID4 = Field()
-    created_at: datetime = Field()
-    updated_at: datetime = Field()
+class ProductOut(ProductIn, OutMixin):
+    ...
+
+
+def convert_decimal_128(v):
+    return Decimal128(str(v))
+
+
+Decimal_ = Annotated[Decimal, AfterValidator(convert_decimal_128)]
 
 
 class ProductUpdate(ProductBase):
@@ -34,5 +39,5 @@ class ProductUpdate(ProductBase):
     )
 
 
-class ProductUpdateOut(ProductUpdate):
+class ProductUpdateOut(ProductUpdate, OutMixin):
     ...
