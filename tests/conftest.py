@@ -4,7 +4,7 @@ from uuid import UUID
 import pytest
 
 from dio_santander_store_api.db.mongo import db_client
-from dio_santander_store_api.schemas.product import ProductIn
+from dio_santander_store_api.schemas.product import ProductIn, ProductUpdate
 from tests.factories import product_data
 
 
@@ -38,3 +38,8 @@ def product_id() -> UUID:
 @pytest.fixture
 def product_in(product_id):
     return ProductIn(**product_data(), id=product_id)
+
+
+@pytest.fixture
+def product_up(product_id):
+    return ProductUpdate(**product_data(), id=product_id)

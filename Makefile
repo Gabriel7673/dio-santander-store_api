@@ -9,3 +9,6 @@ precommit-install:
 
 test:
 	@poetry run pytest
+
+test-matching:
+	@poetry run pytest -s -rx -k $(K) --pdb dio_santander_store_api ./tests/
