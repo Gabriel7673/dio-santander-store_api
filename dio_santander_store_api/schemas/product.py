@@ -2,12 +2,12 @@ from decimal import Decimal
 from typing import Annotated, Optional
 
 from bson import Decimal128
-from pydantic import AfterValidator, BaseModel, Field
+from pydantic import AfterValidator, Field
 
-from dio_santander_store_api.schemas.base import BaseSchemaMixin, OutMixin
+from dio_santander_store_api.schemas.base import BaseSchemaMixin, OutSchema
 
 
-class ProductBase(BaseModel):
+class ProductBase(BaseSchemaMixin):
     name: str = Field(..., description="Name of the product")
     quantity: int = Field(..., description="Quantity of the product in stock")
     price: Decimal = Field(..., description="Price of the product")
@@ -18,7 +18,7 @@ class ProductIn(ProductBase, BaseSchemaMixin):
     ...
 
 
-class ProductOut(ProductIn, OutMixin):
+class ProductOut(ProductIn, OutSchema):
     ...
 
 
@@ -29,7 +29,7 @@ def convert_decimal_128(v):
 Decimal_ = Annotated[Decimal, AfterValidator(convert_decimal_128)]
 
 
-class ProductUpdate(ProductBase):
+class ProductUpdate(BaseSchemaMixin):
     quantity: Optional[int] = Field(
         None, description="Quantity of the product in stock"
     )
@@ -39,5 +39,5 @@ class ProductUpdate(ProductBase):
     )
 
 
-class ProductUpdateOut(ProductUpdate, OutMixin):
+class ProductUpdateOut(ProductOut):
     ...

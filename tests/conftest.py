@@ -2,6 +2,7 @@ import asyncio
 from uuid import UUID
 
 import pytest
+from httpx import AsyncClient
 
 from dio_santander_store_api.db.mongo import db_client
 from dio_santander_store_api.schemas.product import ProductIn, ProductUpdate
@@ -29,6 +30,19 @@ async def clear_collections(mongo_client):
         if collection_name.startswith("system"):
             continue
         await mongo_client.get_database()[collection_name].delete_many({})
+
+
+@pytest.fixture
+async def client():
+    from dio_santander_store_api.main import app
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.fixture
+def products_url() -> str:
+    return "/products/"
 
 
 @pytest.fixture
