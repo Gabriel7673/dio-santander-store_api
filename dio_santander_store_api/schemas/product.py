@@ -33,7 +33,7 @@ class ProductUpdate(ProductBase):
     quantity: Optional[int] = Field(
         None, description="Quantity of the product in stock"
     )
-    price: Optional[Decimal] = Field(None, description="Price of the product")
+    price: Optional[Decimal_] = Field(None, description="Price of the product")
     status: Optional[bool] = Field(
         None, description="Status of the product, True if available"
     )
