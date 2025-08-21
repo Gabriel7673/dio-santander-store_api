@@ -1,4 +1,5 @@
-from typing import List
+from decimal import Decimal
+from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, status
 from pydantic import UUID4
@@ -6,6 +7,7 @@ from pydantic import UUID4
 from dio_santander_store_api.core.exceptions import NotFoundException
 from dio_santander_store_api.schemas.product import ProductIn, ProductOut, ProductUpdate
 from dio_santander_store_api.usecases.product import ProductUseCase
+from dio_santander_store_api.utils.converters import convert_decimal_128
 
 router = APIRouter(tags=["products"])
 
@@ -26,8 +28,21 @@ async def get(id: UUID4 = Path(alias="id"), usecase: ProductUseCase = Depends())
 
 
 @router.get(path="/", status_code=status.HTTP_200_OK)
-async def query(usecase: ProductUseCase = Depends()) -> List[ProductOut]:
-    return await usecase.query()
+async def query(
+    usecase: ProductUseCase = Depends(),
+    min_price: Optional[Decimal] = None,
+    max_price: Optional[Decimal] = None,
+) -> List[ProductOut]:
+    query_filter = {}
+    if min_price is not None or max_price is not None:
+        price_filter = {}
+        if min_price is not None:
+            price_filter["$gte"] = convert_decimal_128(min_price)
+        if max_price is not None:
+            price_filter["$lte"] = convert_decimal_128(max_price)
+        query_filter["price"] = price_filter
+
+    return await usecase.query(query_filter)
 
 
 @router.patch(path="/{id}", status_code=status.HTTP_200_OK)

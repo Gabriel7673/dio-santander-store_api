@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from dio_santander_store_api.core.config import settings
+from dio_santander_store_api.core.exceptions import register_exception_handlers
 from dio_santander_store_api.routers import api_router
 
 
@@ -16,4 +17,5 @@ class App(FastAPI):
 
 
 app = App()
+register_exception_handlers(app)
 app.include_router(api_router)

@@ -1,10 +1,10 @@
 from decimal import Decimal
 from typing import Annotated, Optional
 
-from bson import Decimal128
 from pydantic import AfterValidator, Field
 
 from dio_santander_store_api.schemas.base import BaseSchemaMixin, OutSchema
+from dio_santander_store_api.utils.converters import convert_decimal_128
 
 
 class ProductBase(BaseSchemaMixin):
@@ -20,10 +20,6 @@ class ProductIn(ProductBase, BaseSchemaMixin):
 
 class ProductOut(ProductIn, OutSchema):
     ...
-
-
-def convert_decimal_128(v):
-    return Decimal128(str(v))
 
 
 Decimal_ = Annotated[Decimal, AfterValidator(convert_decimal_128)]
